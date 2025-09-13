@@ -1,7 +1,6 @@
 name: Build Android APK
 
 on:
-  workflow_dispatch:  # allows manual run
   push:
     branches:
       - main
@@ -11,11 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 18
 
@@ -23,34 +21,22 @@ jobs:
         run: |
           cd vite-project
           npm install
-
-      - name: Build web app
-        run: |
-          cd vite-project
           npm run build
 
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: 17
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install Capacitor + Android
+      - name: Install Capacitor & Android project
         run: |
           cd vite-project
-          npm install @capacitor/core @capacitor/cli
+          npm install @capacitor/core @capacitor/cli @capacitor/android
           npx cap add android
+          npx cap sync android
 
       - name: Build Android APK
         run: |
           cd vite-project/android
           ./gradlew assembleDebug
 
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v3
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
           name: nightwave-unsigned-apk
           path: vite-project/android/app/build/outputs/apk/debug/app-debug.apk
