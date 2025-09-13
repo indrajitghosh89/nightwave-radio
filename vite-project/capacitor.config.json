@@ -1,0 +1,6 @@
+{
+  "appId": "com.nightwave.radio",
+  "appName": "Nightwave Radio",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}
